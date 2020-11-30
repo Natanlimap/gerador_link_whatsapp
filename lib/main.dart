@@ -1,3 +1,4 @@
+import 'dart:html';
 import 'dart:ui';
 
 import 'package:clipboard/clipboard.dart';
@@ -93,23 +94,64 @@ class _MyHomePageState extends State<MyHomePage> {
                   labelText: "Digite a sua mensagem"),
             ),
             SizedBox(height: 20),
-            RaisedButton(
-              padding: EdgeInsets.symmetric(horizontal: 50, vertical: 20),
-              color: Colors.blue,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(18.0),
-              ),
-              child: Text(
-                "Gerar link",
-                style: TextStyle(color: Colors.white),
-              ),
-              onPressed: () {
-                setState(() {
-                  link = gerarLink();
-                });
-                FlutterClipboard.copy(link).then((value) => print(""));
-              },
-            ),
+            link == ''
+                ? RaisedButton(
+                    padding: EdgeInsets.symmetric(horizontal: 50, vertical: 20),
+                    color: Colors.blue,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(18.0),
+                    ),
+                    child: Text(
+                      link == '' ? "Gerar link" : "Gerar novamente",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        link = gerarLink();
+                      });
+                      FlutterClipboard.copy(link).then((value) => print(""));
+                    },
+                  )
+                : Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      RaisedButton(
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 50, vertical: 20),
+                        color: Colors.blue,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(18.0),
+                        ),
+                        child: Text(
+                          "Copiar link",
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        onPressed: () {
+                          FlutterClipboard.copy(link)
+                              .then((value) => print("teste"));
+                        },
+                      ),
+                      RaisedButton(
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 50, vertical: 20),
+                        color: Colors.blue,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(18.0),
+                        ),
+                        child: Text(
+                          "Gerar novamente",
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            link = gerarLink();
+                          });
+                          FlutterClipboard.copy(link)
+                              .then((value) => print(""));
+                        },
+                      ),
+                    ],
+                  ),
             SizedBox(
               height: 20,
             ),
@@ -154,6 +196,7 @@ class _MyHomePageState extends State<MyHomePage> {
                               width: 10,
                             ),
                             CircleAvatar(
+                              child: Icon(Icons.person),
                               backgroundColor: Colors.white,
                             ),
                             SizedBox(
