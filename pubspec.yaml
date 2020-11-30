@@ -31,6 +31,7 @@ dependencies:
   clipboard: ^0.1.2+8
   mobx: ^1.2.1+4
   flutter_mobx: 
+  mask_text_input_formatter: ^1.1.0
 
 dev_dependencies:
   flutter_test:

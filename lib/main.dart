@@ -2,6 +2,7 @@ import 'package:clipboard/clipboard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:gerador_link_wpp_web/controller.dart';
+import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
 void main() {
   runApp(MyApp());
@@ -37,10 +38,13 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   FormController formController = FormController();
+  var telefoneMask = new MaskTextInputFormatter(
+      mask: '+## (##) #####-####', filter: {"#": RegExp(r'[0-9]')});
+
   String link = "";
   gerarLink() {
-    return "https://api.whatsapp.com/send?phone=" +
-        formController.telefone +
+    return "https://api.whatsapp.com/send?phone=+" +
+        telefoneMask.getUnmaskedText() +
         "&text=" +
         converterMensagem();
   }
@@ -60,11 +64,12 @@ class _MyHomePageState extends State<MyHomePage> {
         height: 500,
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10), color: Colors.white),
-        width: 480,
+        width: 400,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             TextFormField(
+              inputFormatters: [telefoneMask],
               onChanged: (value) => formController.telefone = value,
               decoration: InputDecoration(
                   focusedBorder: OutlineInputBorder(),
@@ -75,6 +80,7 @@ class _MyHomePageState extends State<MyHomePage> {
               onChanged: (value) => formController.mensagem = value,
               minLines: 4,
               maxLines: 4,
+              maxLength: 380,
               decoration: InputDecoration(
                   enabledBorder: OutlineInputBorder(),
                   focusedBorder: OutlineInputBorder(),
