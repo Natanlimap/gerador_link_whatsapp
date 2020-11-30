@@ -1,7 +1,7 @@
-import 'dart:html';
-
 import 'package:clipboard/clipboard.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:gerador_link_wpp_web/controller.dart';
 
 void main() {
   runApp(MyApp());
@@ -36,18 +36,18 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  TextEditingController numeroDeCelular = TextEditingController();
-  TextEditingController mensagem = TextEditingController();
+  FormController formController = FormController();
+  String link = "";
   gerarLink() {
     return "https://api.whatsapp.com/send?phone=" +
-        numeroDeCelular.text +
+        formController.telefone +
         "&text=" +
         converterMensagem();
   }
 
   converterMensagem() {
     String mensagemConvertida;
-    mensagemConvertida = mensagem.text.replaceAll(" ", "%20");
+    mensagemConvertida = formController.mensagem.replaceAll(" ", "%20");
     return mensagemConvertida;
   }
 
@@ -56,56 +56,133 @@ class _MyHomePageState extends State<MyHomePage> {
     var size = MediaQuery.of(context).size;
     return Scaffold(
         backgroundColor: Colors.blue,
-        body: Center(
-            child: Container(
-          width: size.width * 0.3,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              TextFormField(
-                controller: numeroDeCelular,
-                decoration: InputDecoration(
-                    focusedBorder: OutlineInputBorder(),
-                    labelStyle: TextStyle(color: Colors.white),
-                    labelText: "Digite o numero de telefone"),
+        body: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 20),
+              height: size.height * 0.6,
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10), color: Colors.white),
+              width: size.width * 0.25,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  TextFormField(
+                    onChanged: (value) => formController.telefone = value,
+                    decoration: InputDecoration(
+                        focusedBorder: OutlineInputBorder(),
+                        labelText: "Digite o numero de telefone"),
+                  ),
+                  SizedBox(height: 20),
+                  TextFormField(
+                    onChanged: (value) => formController.mensagem = value,
+                    minLines: 4,
+                    maxLines: 4,
+                    decoration: InputDecoration(
+                        enabledBorder: OutlineInputBorder(),
+                        focusedBorder: OutlineInputBorder(),
+                        labelText: "Digite a sua mensagem"),
+                  ),
+                  SizedBox(height: 20),
+                  RaisedButton(
+                    padding: EdgeInsets.symmetric(horizontal: 50, vertical: 20),
+                    color: Colors.blue,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(18.0),
+                    ),
+                    child: Text(
+                      "Gerar link",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        link = gerarLink();
+                      });
+                      FlutterClipboard.copy(link).then((value) => print(""));
+                    },
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Text(
+                    "SEU LINK FOI GERADO, COPIE E COLE ONDE DESEJAR",
+                    style: TextStyle(
+                        color: Colors.white, fontWeight: FontWeight.bold),
+                  ),
+                  SelectableText(link),
+                ],
               ),
-              SizedBox(height: 20),
-              TextFormField(
-                controller: mensagem,
-                minLines: 4,
-                maxLines: 4,
-                decoration: InputDecoration(
-                    enabledBorder: OutlineInputBorder(),
-                    focusedBorder: OutlineInputBorder(),
-                    labelStyle: TextStyle(color: Colors.white),
-                    labelText: "Digite a sua mensagem"),
-              ),
-              SizedBox(height: 20),
-              RaisedButton(
-                padding: EdgeInsets.symmetric(horizontal: 50, vertical: 20),
-                color: Colors.yellow,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(18.0),
-                ),
-                child: Text(
-                  "Gerar link",
-                  style: TextStyle(color: Colors.black),
-                ),
-                onPressed: () {
-                  FlutterClipboard.copy(gerarLink())
-                      .then((value) => print("copiei"));
-                },
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              Text(
-                "SEU LINK FOI GERADO, COLAR ONDE DESEJAR",
-                style:
-                    TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-              )
-            ],
-          ),
-        )));
+            ),
+
+            //CELULAR
+
+            //fundo
+            Observer(builder: (_) {
+              return Container(
+                width: 400,
+                height: 800,
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: Colors.black),
+                //TELA
+                child: Container(
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: Colors.white),
+                    margin: EdgeInsets.symmetric(vertical: 50, horizontal: 20),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Container(
+                          height: 80,
+                          width: 380,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: Colors.green),
+                          child: Align(
+                              alignment: Alignment.centerLeft,
+                              child: Row(
+                                children: [
+                                  SizedBox(
+                                    width: 10,
+                                  ),
+                                  CircleAvatar(
+                                    backgroundColor: Colors.white,
+                                  ),
+                                  SizedBox(
+                                    width: 10,
+                                  ),
+                                  Text(
+                                    formController.telefone,
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 18),
+                                  ),
+                                ],
+                              )),
+                        ),
+                        Container(
+                          margin: EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 10),
+                          padding: EdgeInsets.symmetric(
+                              vertical: 20, horizontal: 10),
+                          width: 380,
+                          decoration: BoxDecoration(
+                              border: Border.all(color: Colors.black),
+                              borderRadius: BorderRadius.circular(10),
+                              color: Colors.white),
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              formController.mensagem,
+                            ),
+                          ),
+                        ),
+                      ],
+                    )),
+              );
+            })
+          ],
+        ));
   }
 }
