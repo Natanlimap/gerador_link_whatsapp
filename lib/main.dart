@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:clipboard/clipboard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -68,6 +70,10 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            Image.network(
+              'http://zapgenerate.linttech.com/logo.png',
+              width: 200,
+            ),
             TextFormField(
               inputFormatters: [telefoneMask],
               onChanged: (value) => formController.telefone = value,
@@ -80,7 +86,7 @@ class _MyHomePageState extends State<MyHomePage> {
               onChanged: (value) => formController.mensagem = value,
               minLines: 4,
               maxLines: 4,
-              maxLength: 380,
+              maxLength: 150,
               decoration: InputDecoration(
                   enabledBorder: OutlineInputBorder(),
                   focusedBorder: OutlineInputBorder(),
