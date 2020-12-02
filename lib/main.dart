@@ -1,7 +1,5 @@
-import 'dart:html';
 import 'dart:ui';
-
-import 'package:clipboard/clipboard.dart';
+import 'package:clippy/server.dart' as clippy;
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:gerador_link_wpp_web/controller.dart';
@@ -16,7 +14,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'ZapGenerator',
       theme: ThemeData(
         // This is the theme of your application.
         //
@@ -109,7 +107,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       setState(() {
                         link = gerarLink();
                       });
-                      FlutterClipboard.copy(link).then((value) => print(""));
+                      clippy.write(link).then((value) => print(""));
                     },
                   )
                 : Row(
@@ -127,8 +125,10 @@ class _MyHomePageState extends State<MyHomePage> {
                           style: TextStyle(color: Colors.white),
                         ),
                         onPressed: () {
-                          FlutterClipboard.copy(link)
-                              .then((value) => print("teste"));
+                          setState(() {
+                            link = gerarLink();
+                          });
+                          clippy.write(link).then((value) => print("teste"));
                         },
                       ),
                       RaisedButton(
@@ -146,8 +146,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           setState(() {
                             link = gerarLink();
                           });
-                          FlutterClipboard.copy(link)
-                              .then((value) => print(""));
+                          clippy.write(link).then((value) => print(""));
                         },
                       ),
                     ],
@@ -160,7 +159,11 @@ class _MyHomePageState extends State<MyHomePage> {
               style:
                   TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
             ),
-            SelectableText(link),
+            link != ''
+                ? TextFormField(
+                    controller: TextEditingController()..text = link,
+                  )
+                : Container()
           ],
         ),
       ),
