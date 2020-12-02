@@ -161,7 +161,6 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             link != ''
                 ? TextFormField(
-                    enabled: false,
                     controller: TextEditingController()..text = link,
                   )
                 : Container()
