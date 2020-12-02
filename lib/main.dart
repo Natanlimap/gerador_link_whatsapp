@@ -159,7 +159,11 @@ class _MyHomePageState extends State<MyHomePage> {
               style:
                   TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
             ),
-            SelectableText(link),
+            link != ''
+                ? TextFormField(
+                    controller: TextEditingController()..text = link,
+                  )
+                : Container()
           ],
         ),
       ),
